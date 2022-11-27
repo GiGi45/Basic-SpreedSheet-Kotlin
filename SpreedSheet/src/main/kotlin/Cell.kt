@@ -1,0 +1,1 @@
+class Cell (var cellValue: Int = 0, var nextCell: Cell?)
