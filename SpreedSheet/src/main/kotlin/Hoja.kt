@@ -69,7 +69,7 @@ class Hoja(var name: String, var countRows: Int, var countColumns: Int) {
     }
 
     fun restCells(cInicio: Int, fInicio: Int, cFinal: Int, fFinal: Int, fRes: Int, cRes: Int){ //In development
-        var resta = 0 //Variale suma
+        var resta = 0 //Variale resta
         var pFila = firstRow //Pivot de las filas
         var pCFila = firstRow //Pivot de las columnas
         var pCombiFila = firstRow //Pivot de la combinacion de filas y columnas
@@ -88,7 +88,7 @@ class Hoja(var name: String, var countRows: Int, var countColumns: Int) {
                 restaXFila -= restaF
                 posCol++
             }
-            resta -= restaXFila
+            resta += restaXFila
             pCombiFila = pCombiFila?.nextRow
         }
 
@@ -97,6 +97,42 @@ class Hoja(var name: String, var countRows: Int, var countColumns: Int) {
             nuevo = nuevo?.nextRow
         }
         nuevo?.changeValueOfCell(cRes,resta) //Encontrar la columna e Ingresar el valor en esa celda
+    }
+
+    fun multiCells(cInicio: Int, fInicio: Int, cFinal: Int, fFinal: Int, fRes: Int, cRes: Int){
+        var multi = 1 //Variale par almacenar la multiplicacion
+        var pFila = firstRow //Pivot de las filas
+        var pCFila = firstRow //Pivot de las columnas
+        var pCombiFila = firstRow //Pivot de la combinacion de filas y columnas
+        var posCol = cInicio //Variable para la pos de la columna inicial
+        val auxPosCol = posCol
+
+        //Caso para suma de varias filas con varias columnas
+        repeat(fInicio-1){//Se recorre hasta llegar a la fila donde se va a empezar a sumar
+            pCombiFila = pCombiFila?.nextRow //El puntero pCombiFila se posiciona
+        }
+        repeat(fFinal+1-fInicio){
+            var multiXFila = 1 //Inicializar la variable en 1 pq es una multiplicacion
+            posCol = auxPosCol
+            repeat(cFinal+1-cInicio){ //Se repetira la cantidad de espacios que sea el rango //SE NECESITA UNA FORMULA PARA CONTROLAR EL RANGO DE LAS COLUMNAS
+                val multiF: Int = pCombiFila!!.returnCellValue(posCol)
+                if (multiF == 0){ //Agregar una condicion si el valor de la celda es 0
+                    multiXFila *= 1 //Si este caso, se multiplicara por 1
+                    posCol++
+                } else{
+                    multiXFila *= multiF
+                    posCol++
+                }
+            }
+            multi *= multiXFila
+            pCombiFila = pCombiFila?.nextRow
+        }
+
+        var nuevo = firstRow //Propia variable PIVOT para agregar el valor de la suma en la celda deseada
+        repeat(fRes-1){ //Poner el resultado en la hoja
+            nuevo = nuevo?.nextRow
+        }
+        nuevo?.changeValueOfCell(cRes,multi) //Encontrar la columna e Ingresar el valor en esa celda
     }
 
     fun averageCells(cInicio: Int, fInicio: Int, cFinal: Int, fFinal: Int, fRes: Int, cRes: Int){
@@ -162,9 +198,9 @@ fun createSheet(name: String){ //Funcion que permite crear una Hoja
     newSheet.changeCellValue(4,5,8)
     newSheet.changeCellValue(5,5,10)
 
-    //newSheet.sumCells(2,3,2,5,1,1)
-    //newSheet.sumCells(5,4,5,5,3,1)
-    newSheet.restCells(2,4,5,5,2,1) //In development
-    newSheet.averageCells(2,4,6,4,6,1)
+    newSheet.sumCells(5,4,5,5,4,1)
+    newSheet.restCells(2,4,5,5,2,1)
+    newSheet.multiCells(2,4,5,5,3,1)
+    newSheet.averageCells(2,4,6,4,1,1)
     newSheet.printSheet(name) //Imprime la Hoja
 }
