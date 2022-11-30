@@ -68,6 +68,37 @@ class Hoja(var name: String, var countRows: Int, var countColumns: Int) {
         nuevo?.changeValueOfCell(cRes,suma) //Encontrar la columna e Ingresar el valor en esa celda
     }
 
+    fun restCells(cInicio: Int, fInicio: Int, cFinal: Int, fFinal: Int, fRes: Int, cRes: Int){ //In development
+        var resta = 0 //Variale suma
+        var pFila = firstRow //Pivot de las filas
+        var pCFila = firstRow //Pivot de las columnas
+        var pCombiFila = firstRow //Pivot de la combinacion de filas y columnas
+        var posCol = cInicio //Variable para la pos de la columna inicial
+        val auxPosCol = posCol
+
+        //Caso para suma de varias filas con varias columnas
+        repeat(fInicio-1){//Se recorre hasta llegar a la fila donde se va a empezar a sumar
+            pCombiFila = pCombiFila?.nextRow //El puntero pCombiFila se posiciona
+        }
+        repeat(fFinal+1-fInicio){
+            var restaXFila = 0
+            posCol = auxPosCol
+            repeat(cFinal+1-cInicio){ //Se repetira la cantidad de espacios que sea el rango //SE NECESITA UNA FORMULA PARA CONTROLAR EL RANGO DE LAS COLUMNAS
+                val restaF: Int = pCombiFila!!.returnCellValue(posCol)
+                restaXFila -= restaF
+                posCol++
+            }
+            resta -= restaXFila
+            pCombiFila = pCombiFila?.nextRow
+        }
+
+        var nuevo = firstRow //Propia variable PIVOT para agregar el valor de la suma en la celda deseada
+        repeat(fRes-1){ //Poner el resultado en la hoja
+            nuevo = nuevo?.nextRow
+        }
+        nuevo?.changeValueOfCell(cRes,resta) //Encontrar la columna e Ingresar el valor en esa celda
+    }
+
     fun averageCells(cInicio: Int, fInicio: Int, cFinal: Int, fFinal: Int, fRes: Int, cRes: Int){
         var suma = 0 //Variale suma
         var count = 0 //Variable contador
@@ -133,7 +164,7 @@ fun createSheet(name: String){ //Funcion que permite crear una Hoja
 
     //newSheet.sumCells(2,3,2,5,1,1)
     //newSheet.sumCells(5,4,5,5,3,1)
-    newSheet.averageCells(2,4,5,5,2,1)
+    newSheet.restCells(2,4,5,5,2,1) //In development
     newSheet.averageCells(2,4,6,4,6,1)
     newSheet.printSheet(name) //Imprime la Hoja
 }
